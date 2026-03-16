@@ -1745,10 +1745,15 @@
     }
 
     /* ── Init ── */
-    const restored = loadState();
-    if (restored) document.getElementById('globalPhase').value = state.phase;
-    renderWeek();
-    computeSummary();
+    fetch('ingredients.json')
+      .then(r => r.json())
+      .then(data => {
+        _core._initData(data);
+        const restored = loadState();
+        if (restored) document.getElementById('globalPhase').value = state.phase;
+        renderWeek();
+        computeSummary();
+      });
   </script>
 </body>
 
