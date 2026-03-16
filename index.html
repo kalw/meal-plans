@@ -1268,19 +1268,23 @@
       return _core.activeList(phase, fam, state ? state.disabled : new Set());
     }
 
-    let state = {
-      phase: '2',
-      activeDays: [0],
-      dayLabels: [...DAYS],
-      disabled: new Set(),
-      days: DAYS.map(() => ({
-        meals: {
-          pdj: { menu: 0, persons: 2, ingr: {}, skipped: false },
-          dej: { menu: 0, persons: 2, ingr: {}, skipped: false },
-          din: { menu: 0, persons: 2, ingr: {}, skipped: false },
-        }
-      }))
-    };
+    let state;
+
+    function makeDefaultState() {
+      return {
+        phase: '2',
+        activeDays: [0],
+        dayLabels: [...DAYS],
+        disabled: new Set(),
+        days: DAYS.map(() => ({
+          meals: {
+            pdj: { menu: 0, persons: 2, ingr: {}, skipped: false },
+            dej: { menu: 0, persons: 2, ingr: {}, skipped: false },
+            din: { menu: 0, persons: 2, ingr: {}, skipped: false },
+          }
+        }))
+      };
+    }
 
     function toggleIngr(fam, ing) {
       const key = ingrKey(fam, ing);
@@ -1815,6 +1819,7 @@
         window._menusData = menusData;
         document.getElementById('langSelect').value = _savedLang;
         _core._initData(ingredientsData, menusData, localeData);
+        state = makeDefaultState();
         const restored = loadState();
         if (restored) document.getElementById('globalPhase').value = state.phase;
         renderWeek();
