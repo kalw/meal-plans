@@ -1,0 +1,62 @@
+{
+  "lang": "en",
+  "langLabel": "English",
+  "days": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+  "meals": ["Breakfast","Lunch","Dinner"],
+  "tabs": {
+    "planner": "Planner",
+    "ingredients": "Ingredients",
+    "courses": "Shopping list"
+  },
+  "header": {
+    "export": "↓ Export",
+    "exportTitle": "Export plan",
+    "import": "↑ Import",
+    "importTitle": "Import a plan"
+  },
+  "planner": {
+    "sub": "Each meal, menu, ingredient and number of people per day.",
+    "phase": "Phase",
+    "phase2": "Phase 2",
+    "phase3": "Phase 3",
+    "defaultPersons": "People (default)",
+    "addDay": "+ Next day",
+    "fullWeek": "+ Full week",
+    "reset": "Reset",
+    "legendLegumes": "Pulses / Yoghurt / Milk"
+  },
+  "meal": {
+    "deleteTitle": "Remove meal",
+    "perPers": "/pers.",
+    "pers": "pers."
+  },
+  "summary": {
+    "titlePrefix": "Shopping list — ",
+    "fullWeek": "full week",
+    "nDays": "{{n}} days"
+  },
+  "ingredients": {
+    "heading": "Allowed ingredients",
+    "qtyPerPers": "Qty/pers.",
+    "enableTitle": "Re-enable",
+    "disableTitle": "Disable"
+  },
+  "courses": {
+    "heading": "Shopping list"
+  },
+  "mealNames": {
+    "pdj": "Breakfast",
+    "dej": "Lunch",
+    "din": "Dinner"
+  },
+  "import": {
+    "title": "Import a plan",
+    "sub": "Paste the previously exported JSON content.",
+    "placeholder": "{\"phase\":\"2\",\"activeDays\":[0],...}",
+    "cancel": "Cancel",
+    "confirm": "Import",
+    "errInvalid": "Invalid JSON — please check the pasted content.",
+    "errFormat": "Unrecognised format — incompatible file.",
+    "errGeneric": "Import error — "
+  }
+}

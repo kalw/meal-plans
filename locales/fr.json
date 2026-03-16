@@ -1,0 +1,62 @@
+{
+  "lang": "fr",
+  "langLabel": "Français",
+  "days": ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"],
+  "meals": ["Petit-déjeuner","Déjeuner","Dîner"],
+  "tabs": {
+    "planner": "Planification",
+    "ingredients": "Ingrédients",
+    "courses": "Liste de courses"
+  },
+  "header": {
+    "export": "↓ Exporter",
+    "exportTitle": "Exporter la planification",
+    "import": "↑ Importer",
+    "importTitle": "Importer une planification"
+  },
+  "planner": {
+    "sub": "Chaque repas, menu, ingrédient et nombre de personnes par jours.",
+    "phase": "Phase",
+    "phase2": "Phase 2",
+    "phase3": "Phase 3",
+    "defaultPersons": "Personnes (défaut)",
+    "addDay": "+ Jour suivant",
+    "fullWeek": "+ Semaine complète",
+    "reset": "Réinitialiser",
+    "legendLegumes": "Légumes secs / Yaourt / Lait"
+  },
+  "meal": {
+    "deleteTitle": "Supprimer ce repas",
+    "perPers": "/pers.",
+    "pers": "pers."
+  },
+  "summary": {
+    "titlePrefix": "Liste de courses — ",
+    "fullWeek": "semaine complète",
+    "nDays": "{{n}} jours"
+  },
+  "ingredients": {
+    "heading": "Ingrédients autorisés",
+    "qtyPerPers": "Qté/pers.",
+    "enableTitle": "Réactiver",
+    "disableTitle": "Désactiver"
+  },
+  "courses": {
+    "heading": "Liste de courses"
+  },
+  "mealNames": {
+    "pdj": "Petit-déjeuner",
+    "dej": "Déjeuner",
+    "din": "Dîner"
+  },
+  "import": {
+    "title": "Importer une planification",
+    "sub": "Collez le contenu JSON exporté précédemment.",
+    "placeholder": "{\"phase\":\"2\",\"activeDays\":[0],...}",
+    "cancel": "Annuler",
+    "confirm": "Importer",
+    "errInvalid": "JSON invalide — vérifiez le contenu collé.",
+    "errFormat": "Format non reconnu — fichier incompatible.",
+    "errGeneric": "Erreur lors de l'import — "
+  }
+}

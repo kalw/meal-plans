@@ -10,8 +10,7 @@
  *   - buildTotals takes (state) explicitly — index.html passes its own state
  */
 
-const DAYS  = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
-const MEALS = ['Petit-déjeuner','Déjeuner','Dîner'];
+let DAYS, MEALS;
 const MKEYS = ['pdj','dej','din'];
 
 // Data — populated via _initData() (loaded from ingredients.json + menus.json)
@@ -23,12 +22,16 @@ let INGR, P3_NEW, FRUIT_DATA, INGR_QTY, MENUS;
  * @param {object} ingredientsData - parsed contents of ingredients.json
  * @param {object} menusData       - parsed contents of menus.json
  */
-function _initData(ingredientsData, menusData) {
+function _initData(ingredientsData, menusData, localeData) {
+  DAYS       = localeData.days;
+  MEALS      = localeData.meals;
   INGR       = ingredientsData.INGR;
   P3_NEW     = new Set(ingredientsData.P3_NEW);
   FRUIT_DATA = ingredientsData.FRUIT_DATA;
   INGR_QTY   = ingredientsData.INGR_QTY;
   MENUS      = menusData.MENUS;
+  DAYS       = localeData.days;
+  MEALS      = localeData.meals;
 }
 
 /**
@@ -119,6 +122,6 @@ const _core = { DAYS, MEALS, MKEYS,
                 _initData, resolveQty, fmtQty, ingrKey, activeList, buildTotals };
 
 if (typeof module !== 'undefined' && module.exports) {
-  _initData(require('./ingredients.json'), require('./menus.json'));
+  _initData(require('./ingredients.json'), require('./menus.json'), require('./locales/fr.json'));
   module.exports = _core;
 }
