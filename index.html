@@ -1240,6 +1240,7 @@
     <div class="modal">
       <div class="modal-title">Importer une planification</div>
       <div class="modal-sub">Collez le contenu JSON exporté précédemment.</div>
+      <input type="file" id="importFile" accept=".json,application/json" onchange="importFromFile(event)" style="display:block;width:100%;margin-bottom:0.75rem;font-size:13px;">
       <textarea id="importText" placeholder='{"phase":"2","activeDays":[0],...}'></textarea>
       <div class="modal-error" id="importError"></div>
       <div class="modal-actions">
@@ -1665,7 +1666,18 @@
       document.getElementById('importModal').classList.remove('open');
     }
 
-    function doImport() {
+    function importFromFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        document.getElementById('importText').value = ev.target.result;
+        document.getElementById('importError').textContent = '';
+      };
+      reader.readAsText(file);
+    }
+
+        function doImport() {
       const raw = document.getElementById('importText').value.trim();
       const errEl = document.getElementById('importError');
       errEl.textContent = '';
