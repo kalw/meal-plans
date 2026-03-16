@@ -7,10 +7,10 @@
  */
 
 const {
-  DAYS, MEALS, MKEYS, MENUS, INGR, P3_NEW,
-  FRUIT_DATA, INGR_QTY,
+  DAYS, MEALS, MKEYS, MENUS,
   resolveQty, fmtQty, ingrKey, activeList, buildTotals,
-} = require('./core.js');
+} = require("./core.js");
+const { INGR, P3_NEW, FRUIT_DATA, INGR_QTY } = require("./ingredients.json");
 
 function makeState(overrides={}) {
   return {
