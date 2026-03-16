@@ -14,6 +14,21 @@ const DAYS  = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'
 const MEALS = ['Petit-déjeuner','Déjeuner','Dîner'];
 const MKEYS = ['pdj','dej','din'];
 
+// Ingredient configuration — populated via _initData() (loaded from ingredients.json)
+let INGR, P3_NEW, FRUIT_DATA, INGR_QTY;
+
+/**
+ * Initialise ingredient data from an external JSON payload.
+ * Called automatically in Node.js (tests); called by index.html after fetch().
+ * @param {object} data - parsed contents of ingredients.json
+ */
+function _initData(data) {
+  INGR       = data.INGR;
+  P3_NEW     = new Set(data.P3_NEW);
+  FRUIT_DATA = data.FRUIT_DATA;
+  INGR_QTY   = data.INGR_QTY;
+}
+
 const MENUS = {
   pdj: [
     { label:'Bleu — Yaourt + Fruit',        color:'blue',   items:[{f:'Yaourt',q:190,u:'g'},{f:'Fruit',q:1,u:'fruit'}] },
@@ -32,72 +47,6 @@ const MENUS = {
   ],
 };
 
-const INGR = {
-  2: {
-    Poisson:         ['Colin','Hareng','Morue','Pangas','Perche du Nil','Saumon','Saumon sauvage','Sole','Thon frais','Truite','Turbot'],
-    'Fruits de mer': ['Coquille St. Jacques','Gambas','Praires','Seiche'],
-    Volaille:        ['Blanc de poulet','Magret de canard'],
-    Viande:          ["Côtelette d'agneau","Filet de porc","Filet mignon de boeuf","Jambon cuit","Viande d'autruche","Viande de veau"],
-    Fromage:         ['Feta (brebis)','Fromage de brebis frais','Fromage de chèvre frais'],
-    'Légumes secs':  ['Haricots de soja','Haricots mungo','Haricots noirs','Lentilles corail','Pois chiches'],
-    Légumes:         ['Artichaut','Asperge verte','Avocat','Brocoli','Carottes','Champignons','Courgettes','Épinards','Fenouil','Haricots verts','Poireau','Poivron rouge','Potiron'],
-    Salade:          ['Concombre','Mâche','Roquette','Salade feuilles de chêne','Salade iceberg','Scarole'],
-    Yaourt:          ['Yaourt de brebis'],
-    Lait:            ['Lait de chèvre','Lait de soja'],
-    Féculents:       ["Flocons d'avoine"],
-    Pain:            ['Biscottes de seigle','Pain de seigle complet'],
-    Oeufs:           ['Oeufs'],
-    Fruit:           ['Abricot frais','Framboises','Kiwi','Mangue','Melon','Mûres','Nectarine','Papaye','Pomme','Quetsches'],
-  },
-  3: {
-    Poisson:          ['Colin','Hareng','Morue','Pangas','Perche du Nil','Saumon','Saumon sauvage','Sole','Thon frais','Truite','Turbot'],
-    'Fruits de mer':  ['Coquille St. Jacques','Crabes','Gambas','Praires','Seiche'],
-    Volaille:         ['Blanc de poulet','Cuisse de poulet','Magret de canard'],
-    Viande:           ["Côtelette d'agneau","Escalope de veau","Filet de porc","Filet mignon de boeuf","Jambon cuit","Poitrine de boeuf","Rosbif","Viande d'autruche","Viande de veau"],
-    Fromage:          ['Feta (brebis)','Fromage de brebis frais','Fromage de Chèvre','Fromage de chèvre frais'],
-    'Légumes secs':   ['Haricots blancs','Haricots de soja','Haricots mungo','Haricots noirs','Lentilles corail','Pois chiches'],
-    'Jeunes pousses': ['Pousse de graine de soja'],
-    Légumes:          ['Artichaut','Asperge verte','Avocat','Brocoli','Carottes','Champignons','Chou-fleur','Courgettes','Épinards','Fenouil','Haricots verts','Poireau','Poivron rouge','Potiron','Pousses de bambous'],
-    Salade:           ['Mâche','Roquette','Salade feuilles de chêne','Salade iceberg','Scarole'],
-    Yaourt:           ['Yaourt au soja','Yaourt de brebis','Yaourt de chèvre'],
-    Lait:             ['Lait de chèvre','Lait de soja'],
-    Féculents:        ["Flocons d'avoine"],
-    Pain:             ['Biscottes de seigle','Pain de seigle complet'],
-    Oeufs:            ['Oeufs'],
-    Fruit:            ['Abricot frais','Framboises','Kiwi','Mangue','Mûres','Nectarine','Papaye','Pomme','Quetsches'],
-  }
-};
-
-const P3_NEW = new Set([
-  'Crabes','Cuisse de poulet','Escalope de veau','Poitrine de boeuf','Rosbif',
-  'Fromage de Chèvre','Haricots blancs','Pousse de graine de soja','Chou-fleur',
-  'Pousses de bambous','Yaourt au soja','Yaourt de chèvre',
-]);
-
-const FRUIT_DATA = {
-  'Abricot frais': {q:120, u:'g'},
-  'Framboises':    {q:100, u:'g'},
-  'Kiwi':          {q:1,   u:'pièce'},
-  'Mangue':        {q:160, u:'g'},
-  'Melon':         {q:120, u:'g'},
-  'Mûres':         {q:100, u:'g'},
-  'Nectarine':     {q:1,   u:'pièce'},
-  'Papaye':        {q:170, u:'g'},
-  'Pomme':         {q:1,   u:'pièce'},
-  'Quetsches':     {q:100, u:'g'},
-};
-
-const INGR_QTY = {
-  'Biscottes de seigle':    {q:30,  u:'g',    note:'~2 biscottes'},
-  'Pain de seigle complet': {q:50,  u:'g',    note:'~1 tranche'},
-  "Flocons d'avoine":       {q:45,  u:'g'},
-  'Yaourt de brebis':       {q:190, u:'g'},
-  'Yaourt au soja':         {q:190, u:'g'},
-  'Yaourt de chèvre':       {q:190, u:'g'},
-  'Lait de chèvre':         {q:190, u:'ml'},
-  'Lait de soja':           {q:190, u:'ml'},
-  'Oeufs':                  {q:2,   u:'oeufs', note:'min. 2 / max. 6 par semaine'},
-};
 
 /**
  * Resolve quantity + unit for any ingredient per person per serving.
@@ -183,10 +132,11 @@ function buildTotals(state) {
 }
 
 // ─── Export for Node.js (tests) / expose as globals in browser ───────────────
-const _core = { DAYS, MEALS, MKEYS, MENUS, INGR, P3_NEW, FRUIT_DATA, INGR_QTY,
-                resolveQty, fmtQty, ingrKey, activeList, buildTotals };
+const _core = { DAYS, MEALS, MKEYS, MENUS,
+                _initData, resolveQty, fmtQty, ingrKey, activeList, buildTotals };
 
 if (typeof module !== 'undefined' && module.exports) {
+  _initData(require('./ingredients.json'));
   module.exports = _core;
 }
 
