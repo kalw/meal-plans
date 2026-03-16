@@ -1136,6 +1136,10 @@
         </svg></span>
     </div>
     <div class="header-actions">
+      <select id="langSelect" onchange="switchLang(this.value)" style="font-size:13px;padding:4px 8px;border-radius:var(--border-radius,6px);border:1px solid #ccc;">
+        <option value="fr">🇫🇷 FR</option>
+        <option value="en">🇬🇧 EN</option>
+      </select>
       <button class="hdr-btn" onclick="exportPlan()" title="Exporter la planification">↓ Exporter</button>
       <button class="hdr-btn" onclick="openImport()" title="Importer une planification">↑ Importer</button>
     </div>
@@ -1717,6 +1721,48 @@
       if (e.target === this) closeImport();
     });
 
+    /* ── i18n ── */
+    let _t = {};
+
+    function t(key) {
+      return key.split('.').reduce((o,k) => o && o[k], _t) || key;
+    }
+
+    function applyLocale(locale) {
+      _t = locale;
+      document.querySelector('[onclick*=planner]').textContent    = t('tabs.planner');
+      document.querySelector('[onclick*=ingredients]').textContent = t('tabs.ingredients');
+      document.querySelector('[onclick*=courses]').textContent    = t('tabs.courses');
+      const btnExp = document.querySelector('[onclick*=exportPlan]');
+      if (btnExp) { btnExp.textContent = t('header.export'); btnExp.title = t('header.exportTitle'); }
+      const btnImp = document.querySelector('[onclick*=openImport]');
+      if (btnImp) { btnImp.textContent = t('header.import'); btnImp.title = t('header.importTitle'); }
+      const btnAdd  = document.getElementById('btnAddDay');    if (btnAdd)  btnAdd.textContent  = t('planner.addDay');
+      const btnWeek = document.getElementById('btnFullWeek');  if (btnWeek) btnWeek.textContent = t('planner.fullWeek');
+      const btnRst  = document.querySelector('[onclick*=resetDays]'); if (btnRst) btnRst.textContent = t('planner.reset');
+      const ph2 = document.querySelector('#globalPhase option[value="2"]'); if (ph2) ph2.textContent = t('planner.phase2');
+      const ph3 = document.querySelector('#globalPhase option[value="3"]'); if (ph3) ph3.textContent = t('planner.phase3');
+      document.querySelector('.modal-title').textContent = t('import.title');
+      document.querySelector('.modal-sub').textContent   = t('import.sub');
+      document.getElementById('importText').placeholder  = t('import.placeholder');
+      document.querySelector('[onclick*=closeImport]').textContent = t('import.cancel');
+      document.querySelector('[onclick*=doImport]').textContent    = t('import.confirm');
+      const ch = document.querySelector('#tab-courses .section-heading'); if (ch) ch.textContent = t('courses.heading');
+      if (typeof renderWeek === 'function') { renderWeek(); computeSummary(); }
+      if (typeof renderIngredients === 'function') renderIngredients();
+      if (typeof renderCourses === 'function') renderCourses();
+    }
+
+    function switchLang(lang) {
+      fetch('locales/' + lang + '.json')
+        .then(r => r.json())
+        .then(locale => {
+          _core._initData(window._ingredientsData, window._menusData, locale);
+          localStorage.setItem('weekplans_lang', lang);
+          applyLocale(locale);
+        });
+    }
+
     /* ── Persistence ── */
     const STORAGE_KEY = 'weekplans_state_v1';
 
@@ -1761,14 +1807,19 @@
     }
 
     /* ── Init ── */
-    Promise.all([fetch("ingredients.json"), fetch("menus.json")])
-      .then(([r1, r2]) => Promise.all([r1.json(), r2.json()]))
-      .then(([ingredientsData, menusData]) => {
-        _core._initData(ingredientsData, menusData);
+    const _savedLang = localStorage.getItem('weekplans_lang') || 'fr';
+    Promise.all([fetch("ingredients.json"), fetch("menus.json"), fetch("locales/" + _savedLang + ".json")])
+      .then(([r1, r2, r3]) => Promise.all([r1.json(), r2.json(), r3.json()]))
+      .then(([ingredientsData, menusData, localeData]) => {
+        window._ingredientsData = ingredientsData;
+        window._menusData = menusData;
+        document.getElementById('langSelect').value = _savedLang;
+        _core._initData(ingredientsData, menusData, localeData);
         const restored = loadState();
         if (restored) document.getElementById('globalPhase').value = state.phase;
         renderWeek();
         computeSummary();
+        applyLocale(localeData);
       });
   </script>
 </body>
