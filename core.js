@@ -132,7 +132,7 @@ function buildTotals(state) {
 }
 
 // ─── Export for Node.js (tests) / expose as globals in browser ───────────────
-const _core = { DAYS, MEALS, MKEYS, MENUS,
+const _core = { DAYS, MEALS, MKEYS, MENUS, INGR, P3_NEW, FRUIT_DATA, INGR_QTY,
                 _initData, resolveQty, fmtQty, ingrKey, activeList, buildTotals };
 
 if (typeof module !== 'undefined' && module.exports) {
