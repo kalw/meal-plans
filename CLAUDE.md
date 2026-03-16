@@ -1,78 +1,44 @@
-# Claude Code Project Configuration
+# Claude Instructions — meal-plans
 
-## Coding Practices
+## Token Efficiency
 
-### Conventional Commits
+Keep token usage lean. This project is small; stay focused.
 
-All commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+### Response style
+- Be concise. No preamble, no summaries after completing a task.
+- Avoid restating what you're about to do — just do it.
+- Skip "I've updated X" confirmations unless asked.
 
-**Format:**
-```
-<type>[optional scope]: <description>
+### Context management
+- Use `/compact` before switching to a new unrelated task.
+- Use `/clear` to start fresh between separate issues.
+- Do not re-read files you've already read in the same session unless the content may have changed.
 
-[optional body]
+### File reading
+- Read only files relevant to the current task.
+- Never read `node_modules/`, `dist/`, `*.lock`, or generated files.
+- Prefer reading specific sections of large files over loading the full file.
 
-[optional footer(s)]
-```
+### CLAUDE.md scope
+- This file stays under 50 lines. Move task-specific instructions to comments or issues instead.
 
-**Types:**
-- `feat`: A new feature
-- `fix`: A bug fix
-- `docs`: Documentation only changes
-- `style`: Changes that don't affect code meaning (formatting, whitespace, etc.)
-- `refactor`: Code change that neither fixes a bug nor adds a feature
-- `perf`: Performance improvement
-- `test`: Adding or modifying tests
-- `chore`: Changes to build process, tooling, dependencies, etc.
-- `ci`: Changes to CI/CD configuration
-- `build`: Changes affecting build system or dependencies
-- `revert`: Reverts a previous commit
+## Project Overview
 
-**Breaking Changes:**
-- Add `!` after type/scope: `feat!: breaking change`
-- Or include `BREAKING CHANGE:` in footer
+A meal-planning app deployed on Cloudflare Workers. Core logic is in `core.js`. Tests live in `tests.js`.
 
-**Examples:**
-```
-feat: add meal planning API endpoint
-fix: correct calorie calculation in recipe
-docs: update README with installation steps
-chore: upgrade dependencies to latest versions
-feat(auth)!: migrate to OAuth2 authentication
-```
+## Commands
 
-### Semantic Versioning
+- `npm test` — run the test suite
+- `npm run deploy` — deploy to Cloudflare Workers
 
-All releases must follow [Semantic Versioning 2.0.0](https://semver.org/):
+## Code Style
 
-**Format:** `MAJOR.MINOR.PATCH`
+- Plain JavaScript (no TypeScript).
+- Keep functions small and pure where possible.
+- Match the existing style in `core.js`.
 
-- **MAJOR**: Incompatible API changes (breaking changes)
-- **MINOR**: Backwards-compatible new functionality
-- **PATCH**: Backwards-compatible bug fixes
+## PR Conventions
 
-**Tag Format:** `vMAJOR.MINOR.PATCH`
-
-**Examples:**
-- `v1.0.0` - Initial release
-- `v1.1.0` - New feature added
-- `v1.1.1` - Bug fix
-- `v2.0.0` - Breaking change
-
-**Pre-release versions:**
-- `v1.0.0-alpha.1`
-- `v1.0.0-beta.1`
-- `v1.0.0-rc.1`
-
-**Determining Version Bumps:**
-- Commits with `feat!`, `fix!`, or `BREAKING CHANGE:` → MAJOR bump
-- Commits with `feat:` → MINOR bump
-- Commits with `fix:`, `perf:` → PATCH bump
-- Other commit types typically don't trigger releases
-
-## Git Workflow
-
-- Always create descriptive commit messages following conventional commits
-- Tag releases using semantic versioning
-- Keep commits atomic and focused on a single change
-- Never force-push to main/master unless explicitly authorized
+- Branch naming: `claude/issue-<N>-<YYYYMMDD>-<HHMM>`
+- Commit prefix: `fix:`, `feat:`, `test:`, `chore:`
+- PRs should close the related issue (`Closes #N`).
