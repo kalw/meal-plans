@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meal Plans</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f1ec;
+      --surface: #ffffff;
+      --surface2: #f9f7f4;
+      --border: #e2ddd7;
+      --text: #2a2520;
+      --muted: #8a847c;
+      --blue: #2563a8;
+      --blue-lt: #dbeafe;
+      --blue-dk: #1e4d8a;
+      --green: #2d6a3f;
+      --green-lt: #dcfce7;
+      --green-dk: #1a4428;
+      --orange: #b45309;
+      --orange-lt: #fef3c7;
+      --orange-dk: #7c3b00;
+      --gold: #c9973a;
+      --radius: 10px;
+      --radius-lg: 16px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, .08), 0 4px 16px rgba(0, 0, 0, .06);
+      --shadow-lg: 0 4px 24px rgba(0, 0, 0, .12);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--text);
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .2);
+    }
+
+    .logo {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .logo-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: #fff;
+      letter-spacing: -.01em;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--gold);
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    /* ── Tabs ── */
+    nav.tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--text);
+      padding: 0 2rem .8rem;
+    }
+
+    .tab-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, .12);
+      color: rgba(255, 255, 255, .65);
+      transition: background .2s, color .2s;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, .2);
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background: var(--gold);
+      color: #fff;
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 3rem;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* ── Section heading ── */
+    .section-heading {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      color: var(--text);
+      margin-bottom: .3rem;
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── Global controls ── */
+    .controls-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: .875rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-group label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    select,
+    input[type=number] {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface2);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    select:focus,
+    input[type=number]:focus {
+      border-color: var(--gold);
+    }
+
+    input[type=number] {
+      width: 60px;
+      text-align: center;
+    }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
+
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .leg-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .leg-dot.blue {
+      background: var(--blue);
+    }
+
+    .leg-dot.green {
+      background: var(--green);
+    }
+
+    .leg-dot.orange {
+      background: var(--orange);
+    }
+
+    .day-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 13px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--text);
+      transition: background .15s, border-color .15s;
+      white-space: nowrap;
+    }
+
+    .day-btn:hover {
+      background: var(--surface2);
+      border-color: #c0bbb4;
+    }
+
+    .day-btn:disabled {
+      opacity: .35;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .day-btn-reset {
+      color: var(--muted);
+    }
+
+    /* ── Week grid ── */
+    .week-grid {
+      display: grid;
+      grid-template-columns: repeat(var(--day-cols, 1), minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .day-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: box-shadow .2s;
+    }
+
+    .day-card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .day-header {
+      background: var(--text);
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .day-name-display {
+      font-family: 'DM Serif Display', serif;
+      font-size: .95rem;
+      color: #fff;
+      letter-spacing: .01em;
+      flex: 1;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 4px;
+      padding: 2px 4px;
+      transition: background .15s;
+    }
+
+    .day-name-display:hover {
+      background: rgba(255, 255, 255, .12);
+    }
+
+    .day-name-input {
+      font-family: 'DM Serif Display', serif;
+      font-size: .95rem;
+      color: var(--text);
+      background: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 6px;
+      flex: 1;
+      text-align: center;
+      outline: none;
+      min-width: 0;
+    }
+
+    .day-edit-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(255, 255, 255, .5);
+      font-size: 12px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      transition: color .15s;
+      line-height: 1;
+    }
+
+    .day-edit-btn:hover {
+      color: #fff;
+    }
+
+    .day-remove-btn:hover {
+      color: #fca5a5;
+    }
+
+    .meal-block {
+      padding: 10px 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meal-block:last-child {
+      border-bottom: none;
+    }
+
+    .meal-block-skipped {
+      padding: 8px 10px;
+      background: var(--surface2);
+      opacity: .6;
+    }
+
+    .meal-name-skipped {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .meal-delete-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background .15s, color .15s, border-color .15s;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .meal-delete-btn:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+    }
+
+    .meal-restore-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+
+    .meal-restore-btn:hover {
+      background: var(--green-lt);
+      color: var(--green-dk);
+      border-color: #86efac;
+    }
+
+    .meal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .meal-name {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .meal-name.blue {
+      color: var(--blue);
+    }
+
+    .meal-name.green {
+      color: var(--green);
+    }
+
+    .meal-name.orange {
+      color: var(--orange);
+    }
+
+    .persons-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .persons-wrap label {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .persons-wrap input {
+      width: 34px;
+      font-size: 11px;
+      padding: 3px 4px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .meal-select {
+      width: 100%;
+      font-size: 11px;
+      padding: 5px 7px;
+      border-radius: 8px;
+      margin-bottom: 0;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .meal-select.blue {
+      border-color: #93c5fd;
+      background: #eff8ff;
+    }
+
+    .meal-select.green {
+      border-color: #86efac;
+      background: #f0fdf4;
+    }
+
+    .meal-select.orange {
+      border-color: #fcd34d;
+      background: #fffbeb;
+    }
+
+    .ingr-block {
+      margin-top: 6px;
+    }
+
+    .ingr-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+
+    .ingr-label {
+      font-size: 9px;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .ingr-qty-pill {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--orange-dk);
+      background: #fff8ed;
+      border: 1px solid #f0d89a;
+      border-radius: 20px;
+      padding: 1px 7px;
+      white-space: nowrap;
+    }
+
+    .ingr-select {
+      width: 100%;
+      font-size: 11px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 1px dashed var(--border);
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .ingr-note {
+      font-size: 9px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .ingr-fixed {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+    }
+
+    .ingr-fixed-name {
+      font-size: 11px;
+      color: var(--text);
+    }
+
+    .ingr-fixed-qty {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--orange-dk);
+    }
+
+    /* ── Summary bar ── */
+    .summary-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .summary-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: .875rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .summary-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 8px;
+    }
+
+    .ingr-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .65rem .875rem;
+      transition: background .15s;
+    }
+
+    .ingr-card:hover {
+      background: #ede9e2;
+    }
+
+    .ingr-card .ic-fam {
+      font-size: 9px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .ingr-card .ic-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ingr-card .ic-qty {
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .ingr-card .ic-unit {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .ingr-card .ic-note {
+      font-size: 10px;
+      color: var(--orange);
+      font-style: italic;
+      margin-top: 2px;
+    }
+
+    .ingr-card .ic-detail {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .td-note {
+      font-size: 10px;
+      color: var(--orange);
+      font-style: italic;
+    }
+
+    .td-perpers {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .empty-state {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 2rem;
+      text-align: center;
+      grid-column: 1/-1;
+    }
+
+    /* ── Tab 1: Ingrédients ── */
+    .phase-section {
+      margin-bottom: 2rem;
+    }
+
+    .phase-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem;
+      margin-bottom: .875rem;
+      padding: .4rem 1rem .4rem .5rem;
+      border-radius: 100px;
+    }
+
+    .phase-badge.p2 {
+      background: var(--blue-lt);
+      color: var(--blue-dk);
+    }
+
+    .phase-badge.p3 {
+      background: var(--green-lt);
+      color: var(--green-dk);
+    }
+
+    .phase-pip {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .phase-pip.p2 {
+      background: var(--blue);
+    }
+
+    .phase-pip.p3 {
+      background: var(--green);
+    }
+
+    .ingr-families {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .fam-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .fam-header {
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .fam-header.p2 {
+      background: var(--blue-lt);
+      color: var(--blue-dk);
+      border-bottom: 1px solid #bfdbfe;
+    }
+
+    .fam-header.p3 {
+      background: var(--green-lt);
+      color: var(--green-dk);
+      border-bottom: 1px solid #bbf7d0;
+    }
+
+    .fam-header-unit {
+      font-size: 10px;
+      font-weight: 400;
+      opacity: .65;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .fam-list {
+      padding: 6px 0;
+    }
+
+    .fam-item {
+      padding: 4px 12px;
+      font-size: 12px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .fam-item:hover {
+      background: var(--surface2);
+    }
+
+    .fam-item.new-ingr {
+      color: var(--green-dk);
+      font-weight: 500;
+    }
+
+    .fam-item-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .fam-item-qty {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--orange-dk);
+      background: #fff8ed;
+      border: 1px solid #f0d89a;
+      border-radius: 20px;
+      padding: 1px 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .new-badge {
+      font-size: 9px;
+      background: var(--green-lt);
+      color: var(--green-dk);
+      padding: 1px 6px;
+      border-radius: 100px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      flex-shrink: 0;
+    }
+
+    .ingr-toggle {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 600;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1.5px solid var(--green);
+      background: var(--green-lt);
+      color: var(--green-dk);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .ingr-toggle:hover {
+      filter: brightness(.92);
+    }
+
+    .ingr-toggle-off {
+      border-color: var(--border);
+      background: var(--surface2);
+      color: var(--muted);
+    }
+
+    .fam-item-off .fam-item-name {
+      color: var(--muted);
+      text-decoration: line-through;
+      opacity: .6;
+    }
+
+    .fam-card-off {
+      opacity: .65;
+    }
+
+    .fam-disabled-count {
+      font-size: 10px;
+      font-weight: 400;
+      opacity: .75;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .hdr-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, .25);
+      background: rgba(255, 255, 255, .1);
+      color: rgba(255, 255, 255, .85);
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+      white-space: nowrap;
+    }
+
+    .hdr-btn:hover {
+      background: rgba(255, 255, 255, .2);
+      border-color: rgba(255, 255, 255, .45);
+      color: #fff;
+    }
+
+    /* ── Import modal ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      width: min(480px, 92vw);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      margin-bottom: .5rem;
+      color: var(--text);
+    }
+
+    .modal-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .modal textarea {
+      width: 100%;
+      height: 180px;
+      font-family: var(--font-mono, monospace);
+      font-size: 11px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface2);
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+    }
+
+    .modal textarea:focus {
+      border-color: var(--gold);
+    }
+
+    .modal-error {
+      font-size: 12px;
+      color: #c0392b;
+      margin-top: 6px;
+      min-height: 18px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 1rem;
+    }
+
+    .courses-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 7px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--text);
+      transition: background .15s, border-color .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: var(--surface2);
+      border-color: #c0bbB4;
+    }
+
+    .btn.primary {
+      background: var(--text);
+      color: #fff;
+      border-color: var(--text);
+    }
+
+    .btn.primary:hover {
+      background: #3d352c;
+    }
+
+    .courses-table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+    }
+
+    table.courses-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      font-size: 13px;
+    }
+
+    .courses-table thead th {
+      background: var(--text);
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .courses-table thead th:first-child {
+      border-radius: 0;
+    }
+
+    .courses-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .1s;
+    }
+
+    .courses-table tbody tr:hover {
+      background: var(--surface2);
+    }
+
+    .courses-table tbody tr.checked {
+      opacity: .45;
+      text-decoration: line-through;
+    }
+
+    .courses-table td {
+      padding: 9px 14px;
+      vertical-align: middle;
+    }
+
+    .td-fam {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .td-name {
+      font-weight: 500;
+    }
+
+    .td-qty {
+      font-size: 15px;
+      font-weight: 300;
+    }
+
+    .td-unit {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .td-meals {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .td-check input[type=checkbox] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: var(--green);
+    }
+
+    .courses-table tfoot td {
+      background: var(--surface2);
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 13px;
+      border-top: 2px solid var(--border);
+    }
+
+    .total-label {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .print-btn {
+      margin-left: auto;
+    }
+
+    @media print {
+
+      header,
+      nav.tabs,
+      .controls-bar,
+      .courses-controls,
+      .tab-btn {
+        display: none !important;
+      }
+
+      .tab-panel {
+        display: block !important;
+      }
+
+      main {
+        padding: 0;
+      }
+
+      body {
+        background: white;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .week-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .week-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      main {
+        padding: 1rem .75rem 2rem;
+      }
+
+      header {
+        padding: .875rem 1rem;
+      }
+
+      nav.tabs {
+        padding: 0 1rem .75rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">
+      <span class="logo-title">Meal Plans</span>
+      <span class="logo-sub">for Gwen .. and Regis .. with <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+          fill="currentColor" style="width:12px;height:12px;vertical-align:middle;color:#e88;display:inline-block;">
+          <path
+            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg></span>
+    </div>
+    <div class="header-actions">
+      <button class="hdr-btn" onclick="exportPlan()" title="Exporter la planification">↓ Exporter</button>
+      <button class="hdr-btn" onclick="openImport()" title="Importer une planification">↑ Importer</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="switchTab('planner')">Planification</button>
+    <button class="tab-btn" onclick="switchTab('ingredients')">Ingrédients</button>
+    <button class="tab-btn" onclick="switchTab('courses')">Liste de courses</button>
+  </nav>
+
+  <main>
+
+    <!-- ══════════════════════════════════════════════════
+     TAB 1 — PLANNER
+══════════════════════════════════════════════════ -->
+    <div id="tab-planner" class="tab-panel active">
+      <h1 class="section-heading">Configurer</h1>
+      <p class="section-sub">Chaque repas, menu, ingrédient et nombre de personnes par jours.</p>
+
+      <div class="controls-bar">
+        <div class="ctrl-group">
+          <label>Phase</label>
+          <select id="globalPhase" onchange="rebuild()">
+            <option value="2">Phase 2</option>
+            <option value="3">Phase 3</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <label>Personnes (défaut)</label>
+          <input type="number" id="globalPersons" value="1" min="1" max="20" oninput="setAllPersons()">
+        </div>
+        <div class="ctrl-group" style="gap:6px;">
+          <button class="day-btn" id="btnAddDay" onclick="addNextDay()">+ Jour suivant</button>
+          <button class="day-btn" id="btnFullWeek" onclick="addFullWeek()">+ Semaine complète</button>
+          <button class="day-btn day-btn-reset" onclick="resetDays()">Réinitialiser</button>
+        </div>
+        <div class="legend">
+          <div class="leg">
+            <div class="leg-dot blue"></div>Légumes secs / Yaourt / Lait
+          </div>
+          <div class="leg">
+            <div class="leg-dot green"></div>Fromage / Oeufs / Volaille
+          </div>
+          <div class="leg">
+            <div class="leg-dot orange"></div>Viande / Poisson
+          </div>
+        </div>
+      </div>
+
+      <div class="week-grid" id="weekGrid"></div>
+
+      <div class="summary-bar">
+        <div class="summary-title" id="summaryTitle">Liste de courses — Lundi</div>
+        <div class="summary-grid" id="summaryGrid"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+     TAB 2 — INGREDIENTS
+══════════════════════════════════════════════════ -->
+    <div id="tab-ingredients" class="tab-panel">
+      <h1 class="section-heading">Ingrédients autorisés</h1>
+      <p class="section-sub">Cliquez sur ✓ pour désactiver un ingrédient — il sera retiré des choix de planification.
+      </p>
+      <div id="ingrContent"></div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+     TAB 3 — COURSES
+══════════════════════════════════════════════════ -->
+    <div id="tab-courses" class="tab-panel">
+      <h1 class="section-heading">Liste de courses</h1>
+      <p class="section-sub">Calculée automatiquement depuis votre planification. Cochez les articles achetés.</p>
+      <div class="courses-controls">
+        <button class="btn" onclick="uncheckAll()">Tout décocher</button>
+        <button class="btn primary print-btn" onclick="window.print()">Imprimer</button>
+      </div>
+      <div class="courses-table-wrap">
+        <table class="courses-table" id="coursesTable">
+          <thead>
+            <tr>
+              <th>Famille</th>
+              <th>Ingrédient</th>
+              <th>Qté totale</th>
+              <th>Unité</th>
+              <th>Qté/pers.</th>
+              <th>Repas</th>
+              <th>Acheté</th>
+            </tr>
+          </thead>
+          <tbody id="coursesTbody"></tbody>
+          <tfoot id="coursesFoot"></tfoot>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Import modal -->
+  <div class="modal-backdrop" id="importModal">
+    <div class="modal">
+      <div class="modal-title">Importer une planification</div>
+      <div class="modal-sub">Collez le contenu JSON exporté précédemment.</div>
+      <textarea id="importText" placeholder='{"phase":"2","activeDays":[0],...}'></textarea>
+      <div class="modal-error" id="importError"></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeImport()">Annuler</button>
+        <button class="btn primary" onclick="doImport()">Importer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="core.js"></script>
+  <script>
+    // ── Aliases to core.js — use var to avoid const redeclaration conflict ──
+    var resolveQty = _core.resolveQty;
+    var fmtQty = _core.fmtQty;
+    var ingrKey = _core.ingrKey;
+    // DAYS, MEALS, MKEYS, MENUS, INGR, P3_NEW, FRUIT_DATA, INGR_QTY
+    // are already globals from core.js — no redeclaration needed
+
+    // State-aware wrapper: index.html calls activeList(phase, fam) without disabled
+    function activeList(phase, fam) {
+      return _core.activeList(phase, fam, state ? state.disabled : new Set());
+    }
+
+    let state = {
+      phase: '2',
+      activeDays: [0],
+      dayLabels: [...DAYS],
+      disabled: new Set(),
+      days: DAYS.map(() => ({
+        meals: {
+          pdj: { menu: 0, persons: 2, ingr: {}, skipped: false },
+          dej: { menu: 0, persons: 2, ingr: {}, skipped: false },
+          din: { menu: 0, persons: 2, ingr: {}, skipped: false },
+        }
+      }))
+    };
+
+    function toggleIngr(fam, ing) {
+      const key = ingrKey(fam, ing);
+      if (state.disabled.has(key)) {
+        state.disabled.delete(key);
+      } else {
+        state.disabled.add(key);
+        // If any day had this ingredient chosen, reset to first active
+        const phase = state.phase;
+        state.days.forEach(d => {
+          MKEYS.forEach(mk => {
+            if (d.meals[mk].ingr[fam] === ing) {
+              const al = activeList(phase, fam);
+              d.meals[mk].ingr[fam] = al[0] || '';
+            }
+          });
+        });
+      }
+      renderIngredients();
+      renderWeek();
+      computeSummary();
+      saveState();
+    }
+
+    /* ── Day management ── */
+    function addNextDay() {
+      const next = state.activeDays.length;
+      if (next < DAYS.length) { state.activeDays.push(next); renderWeek(); computeSummary(); saveState(); }
+    }
+    function addFullWeek() {
+      state.activeDays = DAYS.map((_, i) => i); renderWeek(); computeSummary(); saveState();
+    }
+    function resetDays() {
+      state.activeDays = [0]; renderWeek(); computeSummary(); saveState();
+    }
+    function removeDay(di) {
+      state.dayLabels[di] = DAYS[di];
+      state.activeDays = state.activeDays.filter(d => d !== di);
+      if (state.activeDays.length === 0) state.activeDays = [di === 0 ? 1 : 0];
+      renderWeek(); computeSummary(); saveState();
+    }
+
+    function startEditDay(di) {
+      const span = document.getElementById('dlabel-' + di);
+      if (!span) return;
+      const current = state.dayLabels[di];
+      const header = span.parentElement;
+      // Replace span + button with an input
+      header.innerHTML = `<input class="day-name-input" id="dinput-${di}"
+    value="${current.replace(/"/g, '&quot;')}"
+    onblur="commitEditDay(${di})"
+    onkeydown="if(event.key==='Enter'||event.key==='Escape') this.blur()"
+    autofocus />`;
+      const inp = document.getElementById('dinput-' + di);
+      if (inp) { inp.focus(); inp.select(); }
+    }
+
+    function commitEditDay(di) {
+      const inp = document.getElementById('dinput-' + di);
+      if (!inp) return;
+      const val = inp.value.trim() || DAYS[di];
+      state.dayLabels[di] = val;
+      const isFirst = state.activeDays.indexOf(di) === 0;
+      const header = inp.parentElement;
+      header.innerHTML = `
+        <span class="day-name-display" id="dlabel-${di}" onclick="startEditDay(${di})" title="Cliquer pour renommer">${val}</span>
+        <div style="display:flex;gap:3px;flex-shrink:0;">
+          <button class="day-edit-btn" onclick="startEditDay(${di})" title="Renommer">✎</button>
+          ${!isFirst ? `<button class="day-edit-btn day-remove-btn" onclick="removeDay(${di})" title="Retirer ce jour">✕</button>` : ''}
+        </div>`;
+      computeSummary();
+      saveState();
+    }
+
+    function updateDayBtns() {
+      const addBtn = document.getElementById('btnAddDay');
+      const weekBtn = document.getElementById('btnFullWeek');
+      if (!addBtn) return;
+      const full = state.activeDays.length >= DAYS.length;
+      addBtn.disabled = full;
+      weekBtn.disabled = full;
+    }
+
+    /* ── Tabs ── */
+    function switchTab(id) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      event.target.classList.add('active');
+      if (id === 'courses') renderCourses();
+      if (id === 'ingredients') renderIngredients();
+    }
+
+    /* ── Rebuild ── */
+    function rebuild() {
+      state.phase = document.getElementById('globalPhase').value;
+      renderWeek(); computeSummary(); saveState();
+    }
+
+    function setAllPersons() {
+      const v = parseInt(document.getElementById('globalPersons').value) || 2;
+      state.activeDays.forEach(di => { MKEYS.forEach(mk => { state.days[di].meals[mk].persons = v; }); });
+      renderWeek(); computeSummary(); saveState();
+    }
+
+    /* ── Week render ── */
+    function renderWeek() {
+      const phase = state.phase;
+      const grid = document.getElementById('weekGrid');
+      const n = state.activeDays.length;
+      // Max 4 columns for readability, wrap naturally beyond that
+      const cols = Math.min(n, 4);
+      grid.style.setProperty('--day-cols', cols);
+      grid.innerHTML = '';
+      state.activeDays.forEach(di => {
+        const day = DAYS[di];
+        const d = state.days[di];
+        const card = document.createElement('div');
+        card.className = 'day-card';
+        const label = state.dayLabels[di];
+        let html = `<div class="day-header">
+      <span class="day-name-display" id="dlabel-${di}" onclick="startEditDay(${di})" title="Cliquer pour renommer">${label}</span>
+      <div style="display:flex;gap:3px;flex-shrink:0;">
+        <button class="day-edit-btn" onclick="startEditDay(${di})" title="Renommer">✎</button>
+        ${state.activeDays.indexOf(di) > 0 ? `<button class="day-edit-btn day-remove-btn" onclick="removeDay(${di})" title="Retirer ce jour">✕</button>` : ''}
+      </div>
+    </div>`;
+        MKEYS.forEach((mk, mi) => {
+          const m = d.meals[mk];
+          const menus = MENUS[mk];
+          const cur = menus[m.menu];
+
+          if (m.skipped) {
+            html += `<div class="meal-block meal-block-skipped">
+          <div class="meal-top">
+            <div class="meal-name meal-name-skipped">${MEALS[mi]}</div>
+            <button class="meal-restore-btn" onclick="toggleMeal(${di},'${mk}')" title="Rétablir ce repas">+ Rétablir</button>
+          </div>
+        </div>`;
+            return;
+          }
+
+          const menuOpts = menus.map((mn, i) => `<option value="${i}" ${i === m.menu ? 'selected' : ''}>${mn.label}</option>`).join('');
+          let ingrHtml = '';
+          cur.items.forEach(item => {
+            const fam = item.f;
+            const list = activeList(phase, fam);
+            const fullList = INGR[phase][fam] || [];
+            if (list.length > 1) {
+              // ensure chosen is still active, else fall back
+              let chosen = m.ingr[fam];
+              if (!chosen || !list.includes(chosen)) chosen = list[0];
+              const itemKey = `${di}_${mk}_${fam.replace(/\s/g, '__')}`;
+              window._itemReg = window._itemReg || {};
+              window._itemReg[itemKey] = item;
+              const opts = list.map(ing => {
+                const label = fam === 'Fruit'
+                  ? `${ing} — ${fmtQty(resolveQty(fam, ing, item).q, resolveQty(fam, ing, item).u)}`
+                  : ing;
+                return `<option value="${ing}" ${ing === chosen ? 'selected' : ''}>${label}</option>`;
+              }).join('');
+              const r = resolveQty(fam, chosen, item);
+              const pillId = `qpill-${di}-${mk}-${fam.replace(/\s/g, '_')}`;
+              ingrHtml += `<div class="ingr-block">
+            <div class="ingr-label-row">
+              <div class="ingr-label">${fam}</div>
+              <div class="ingr-qty-pill" id="${pillId}">${fmtQty(r.q, r.u)}/pers.</div>
+            </div>
+            <select class="ingr-select" onchange="setIngr(${di},'${mk}','${fam}',this.value);updateQtyPillSafe(${di},'${mk}','${fam}',this.value,'${itemKey}')">${opts}</select>
+          </div>`;
+            } else if (list.length === 1) {
+              const name = list[0];
+              const r = resolveQty(fam, name, item);
+              ingrHtml += `<div class="ingr-fixed">
+            <span class="ingr-fixed-name">${name}</span>
+            <span class="ingr-fixed-qty">${fmtQty(r.q, r.u)}/pers.${r.note ? ` <span class="ingr-note">${r.note}</span>` : ''}</span>
+          </div>`;
+            } else {
+              // All ingredients disabled for this family
+              ingrHtml += `<div class="ingr-fixed ingr-disabled-row">
+            <span class="ingr-fixed-name" style="color:var(--muted);font-style:italic;">${fam} — désactivé</span>
+          </div>`;
+            }
+          });
+          html += `<div class="meal-block">
+        <div class="meal-top">
+          <div class="meal-name ${cur.color}">${MEALS[mi]}</div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div class="persons-wrap">
+              <label>pers.</label>
+              <input type="number" value="${m.persons}" min="1" max="20" oninput="setPersons(${di},'${mk}',this.value)">
+            </div>
+            <button class="meal-delete-btn" onclick="toggleMeal(${di},'${mk}')" title="Supprimer ce repas">✕</button>
+          </div>
+        </div>
+        <select class="meal-select ${cur.color}" onchange="setMenu(${di},'${mk}',this.value)">${menuOpts}</select>
+        ${ingrHtml}
+      </div>`;
+        });
+        card.innerHTML = html;
+        grid.appendChild(card);
+      });
+      updateDayBtns();
+    }
+
+    function setPersons(di, mk, val) { state.days[di].meals[mk].persons = parseInt(val) || 1; computeSummary(); saveState(); }
+    function setMenu(di, mk, val) { state.days[di].meals[mk].menu = parseInt(val); state.days[di].meals[mk].ingr = {}; renderWeek(); computeSummary(); saveState(); }
+    function setIngr(di, mk, fam, val) { state.days[di].meals[mk].ingr[fam] = val; computeSummary(); saveState(); }
+    function toggleMeal(di, mk) { state.days[di].meals[mk].skipped = !state.days[di].meals[mk].skipped; renderWeek(); computeSummary(); saveState(); }
+
+    function updateQtyPillSafe(di, mk, fam, name, itemKey) {
+      const item = (window._itemReg && window._itemReg[itemKey]) || { f: fam, q: 1, u: 'unité' };
+      const r = resolveQty(fam, name, item);
+      const pill = document.getElementById('qpill-' + di + '-' + mk + '-' + fam.replace(/\s/g, '_'));
+      if (pill) pill.textContent = fmtQty(r.q, r.u) + '/pers.';
+    }
+
+    /* ── Shared totals builder ── */
+    function buildTotals() { return _core.buildTotals(state); }
+
+    /* ── Summary ── */
+    function computeSummary() {
+      const entries = buildTotals();
+      const n = state.activeDays.length;
+      const label = n === 7 ? 'semaine complète'
+        : n === 1 ? state.dayLabels[state.activeDays[0]]
+          : `${n} jours`;
+      const titleEl = document.getElementById('summaryTitle');
+      if (titleEl) titleEl.textContent = `Liste de courses — ${label}`;
+      const grid = document.getElementById('summaryGrid');
+      if (!entries.length) { grid.innerHTML = '<div class="empty-state">Aucun repas configuré.</div>'; return; }
+      grid.innerHTML = entries.map(e => `
+    <div class="ingr-card">
+      <div class="ic-fam">${e.fam}</div>
+      <div class="ic-name" title="${e.name}">${e.name}</div>
+      <div><span class="ic-qty">${Math.round(e.qty)}</span> <span class="ic-unit">${e.unit}</span></div>
+      ${e.note ? `<div class="ic-note">${e.note}</div>` : ''}
+      <div class="ic-detail">${e.meals} repas</div>
+    </div>`).join('');
+    }
+
+    /* ── Courses table ── */
+    const CHECKED_KEY = 'weekplans_checked_v1';
+
+    function saveChecked() {
+      try {
+        const checked = [];
+        document.querySelectorAll('#coursesTbody tr').forEach(tr => {
+          if (tr.classList.contains('checked')) checked.push(tr.dataset.key);
+        });
+        localStorage.setItem(CHECKED_KEY, JSON.stringify(checked));
+      } catch (e) { }
+    }
+
+    function loadChecked() {
+      try { return new Set(JSON.parse(localStorage.getItem(CHECKED_KEY) || '[]')); }
+      catch (e) { return new Set(); }
+    }
+
+    function renderCourses() {
+      const entries = buildTotals();
+      const checkedKeys = loadChecked();
+      const tbody = document.getElementById('coursesTbody');
+      const tfoot = document.getElementById('coursesFoot');
+      tbody.innerHTML = entries.map((e, i) => {
+        const key = `${e.fam}|${e.name}`;
+        const isChecked = checkedKeys.has(key);
+        return `<tr id="crow-${i}" data-key="${key}" class="${isChecked ? 'checked' : ''}">
+      <td class="td-fam">${e.fam}</td>
+      <td class="td-name">${e.name}${e.note ? `<br><span class="td-note">${e.note}</span>` : ''}</td>
+      <td class="td-qty">${Math.round(e.qty)}</td>
+      <td class="td-unit">${e.unit}</td>
+      <td class="td-perpers">${fmtQty(e.qty / e.count, e.unit)}/pers.</td>
+      <td class="td-meals">${e.meals}</td>
+      <td class="td-check"><input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleRow(${i},this)"></td>
+    </tr>`;
+      }).join('');
+      // Count persons per meal type (skipped meals excluded)
+      const mealPersons = { pdj: 0, dej: 0, din: 0 };
+      const mealNames = { pdj: 'Petit-déjeuner', dej: 'Déjeuner', din: 'Dîner' };
+      state.activeDays.forEach(di => {
+        MKEYS.forEach(mk => {
+          const m = state.days[di].meals[mk];
+          if (!m.skipped) mealPersons[mk] += m.persons;
+        });
+      });
+      tfoot.innerHTML = `<tr>
+    ${MKEYS.map(mk => `<td colspan="${mk === 'pdj' ? 2 : mk === 'dej' ? 2 : 3}" class="total-label">
+      ${mealNames[mk]}<br><strong>${mealPersons[mk]}</strong> pers.
+    </td>`).join('')}
+    <td></td>
+  </tr>`;
+    }
+
+    function toggleRow(i, cb) {
+      const tr = document.getElementById('crow-' + i);
+      tr.classList.toggle('checked', cb.checked);
+      saveChecked();
+    }
+    function uncheckAll() {
+      document.querySelectorAll('.courses-table input[type=checkbox]').forEach(cb => { cb.checked = false; });
+      document.querySelectorAll('#coursesTbody tr').forEach(r => r.classList.remove('checked'));
+      saveChecked();
+    }
+
+    /* ── Ingredients tab ── */
+    function renderIngredients() {
+      const phases = [{ key: '2', label: 'Phase 2', cls: 'p2' }, { key: '3', label: 'Phase 3', cls: 'p3' }];
+      const div = document.getElementById('ingrContent');
+      div.innerHTML = phases.map(ph => {
+        const data = INGR[ph.key];
+        const cards = Object.entries(data).map(([fam, items]) => {
+          const disabledCount = items.filter(ing => state.disabled.has(ingrKey(fam, ing))).length;
+          const rows = items.map(ing => {
+            const isNew = ph.key === '3' && P3_NEW.has(ing);
+            const isOff = state.disabled.has(ingrKey(fam, ing));
+            // Use safe escaped key for onclick
+            const safeFam = fam.replace(/'/g, "\\'");
+            const safeIng = ing.replace(/'/g, "\\'");
+            return `<div class="fam-item ${isNew ? 'new-ingr' : ''} ${isOff ? 'fam-item-off' : ''}">
+          <span class="fam-item-name">${ing}${isNew ? '<span class="new-badge">nouveau</span>' : ''}</span>
+          <button class="ingr-toggle ${isOff ? 'ingr-toggle-off' : ''}"
+            onclick="toggleIngr('${safeFam}','${safeIng}')"
+            title="${isOff ? 'Réactiver' : 'Désactiver'}">
+            ${isOff ? '✕' : '✓'}
+          </button>
+        </div>`;
+          }).join('');
+          const famOff = disabledCount === items.length;
+          return `<div class="fam-card ${famOff ? 'fam-card-off' : ''}">
+        <div class="fam-header ${ph.cls}">
+          <span>${fam}</span>
+          ${disabledCount > 0 ? `<span class="fam-disabled-count">${disabledCount}/${items.length} désactivé${disabledCount > 1 ? 's' : ''}</span>` : ''}
+        </div>
+        <div class="fam-list">${rows}</div>
+      </div>`;
+        }).join('');
+        return `<div class="phase-section">
+      <div class="phase-badge ${ph.cls}">
+        <div class="phase-pip ${ph.cls}"></div>${ph.label}
+      </div>
+      <div class="ingr-families">${cards}</div>
+    </div>`;
+      }).join('');
+    }
+
+    /* ── Export / Import ── */
+    function exportPlan() {
+      const payload = {
+        version: 1,
+        phase: state.phase,
+        activeDays: state.activeDays,
+        dayLabels: state.dayLabels,
+        disabled: [...state.disabled],
+        days: state.days.map(d => ({
+          meals: {
+            pdj: { menu: d.meals.pdj.menu, persons: d.meals.pdj.persons, ingr: { ...d.meals.pdj.ingr }, skipped: d.meals.pdj.skipped },
+            dej: { menu: d.meals.dej.menu, persons: d.meals.dej.persons, ingr: { ...d.meals.dej.ingr }, skipped: d.meals.dej.skipped },
+            din: { menu: d.meals.din.menu, persons: d.meals.din.persons, ingr: { ...d.meals.din.ingr }, skipped: d.meals.din.skipped },
+          }
+        }))
+      };
+      const json = JSON.stringify(payload, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const date = new Date().toISOString().slice(0, 10);
+      const uuid = (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = crypto.getRandomValues(new Uint8Array(1))[0] & 15; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16); })).slice(0, 8);
+      a.href = url;
+      a.download = `weekplans-${date}-${uuid}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function openImport() {
+      document.getElementById('importText').value = '';
+      document.getElementById('importError').textContent = '';
+      document.getElementById('importModal').classList.add('open');
+      setTimeout(() => document.getElementById('importText').focus(), 50);
+    }
+
+    function closeImport() {
+      document.getElementById('importModal').classList.remove('open');
+    }
+
+    function doImport() {
+      const raw = document.getElementById('importText').value.trim();
+      const errEl = document.getElementById('importError');
+      errEl.textContent = '';
+      let data;
+      try { data = JSON.parse(raw); } catch (e) {
+        errEl.textContent = 'JSON invalide — vérifiez le contenu collé.';
+        return;
+      }
+      if (!data.days || !Array.isArray(data.days) || data.days.length !== 7) {
+        errEl.textContent = 'Format non reconnu — fichier incompatible.';
+        return;
+      }
+      try {
+        state.phase = data.phase || '2';
+        state.activeDays = data.activeDays || [0];
+        state.dayLabels = data.dayLabels || [...DAYS];
+        state.disabled = new Set(data.disabled || []);
+        state.days = data.days.map(d => ({
+          meals: {
+            pdj: { menu: d.meals.pdj.menu || 0, persons: d.meals.pdj.persons || 2, ingr: d.meals.pdj.ingr || {}, skipped: !!d.meals.pdj.skipped },
+            dej: { menu: d.meals.dej.menu || 0, persons: d.meals.dej.persons || 2, ingr: d.meals.dej.ingr || {}, skipped: !!d.meals.dej.skipped },
+            din: { menu: d.meals.din.menu || 0, persons: d.meals.din.persons || 2, ingr: d.meals.din.ingr || {}, skipped: !!d.meals.din.skipped },
+          }
+        }));
+        document.getElementById('globalPhase').value = state.phase;
+        closeImport();
+        renderWeek();
+        computeSummary();
+        saveState();
+      } catch (e) {
+        errEl.textContent = 'Erreur lors de l\'import — ' + e.message;
+      }
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('importModal').addEventListener('click', function (e) {
+      if (e.target === this) closeImport();
+    });
+
+    /* ── Persistence ── */
+    const STORAGE_KEY = 'weekplans_state_v1';
+
+    function saveState() {
+      try {
+        const payload = {
+          phase: state.phase,
+          activeDays: state.activeDays,
+          dayLabels: state.dayLabels,
+          disabled: [...state.disabled],
+          days: state.days.map(d => ({
+            meals: {
+              pdj: { menu: d.meals.pdj.menu, persons: d.meals.pdj.persons, ingr: { ...d.meals.pdj.ingr }, skipped: d.meals.pdj.skipped },
+              dej: { menu: d.meals.dej.menu, persons: d.meals.dej.persons, ingr: { ...d.meals.dej.ingr }, skipped: d.meals.dej.skipped },
+              din: { menu: d.meals.din.menu, persons: d.meals.din.persons, ingr: { ...d.meals.din.ingr }, skipped: d.meals.din.skipped },
+            }
+          }))
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (e) { /* quota or private mode */ }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (!data.days || data.days.length !== 7) return false;
+        state.phase = data.phase || '2';
+        state.activeDays = data.activeDays || [0];
+        state.dayLabels = data.dayLabels || [...DAYS];
+        state.disabled = new Set(data.disabled || []);
+        state.days = data.days.map(d => ({
+          meals: {
+            pdj: { menu: d.meals.pdj.menu || 0, persons: d.meals.pdj.persons || 2, ingr: d.meals.pdj.ingr || {}, skipped: !!d.meals.pdj.skipped },
+            dej: { menu: d.meals.dej.menu || 0, persons: d.meals.dej.persons || 2, ingr: d.meals.dej.ingr || {}, skipped: !!d.meals.dej.skipped },
+            din: { menu: d.meals.din.menu || 0, persons: d.meals.din.persons || 2, ingr: d.meals.din.ingr || {}, skipped: !!d.meals.din.skipped },
+          }
+        }));
+        return true;
+      } catch (e) { return false; }
+    }
+
+    /* ── Init ── */
+    const restored = loadState();
+    if (restored) document.getElementById('globalPhase').value = state.phase;
+    renderWeek();
+    computeSummary();
+  </script>
+</body>
+
+</html>
