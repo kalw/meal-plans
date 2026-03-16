@@ -37,6 +37,13 @@ A meal-planning app deployed on Cloudflare Workers. Core logic is in `core.js`. 
 - Keep functions small and pure where possible.
 - Match the existing style in `core.js`.
 
+## Git Workflow
+
+- Always create descriptive commit messages following conventional commits
+- Tag releases using semantic versioning
+- Keep commits atomic and focused on a single change
+- Never force-push to main/master unless explicitly authorized
+
 ## PR Conventions
 
 - Branch naming: `claude/issue-<N>-<YYYYMMDD>-<HHMM>`
