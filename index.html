@@ -1309,7 +1309,11 @@
       state.activeDays = DAYS.map((_, i) => i); renderWeek(); computeSummary(); saveState();
     }
     function resetDays() {
-      state.activeDays = [0]; renderWeek(); computeSummary(); saveState();
+      state.activeDays = [0];
+      state.days.forEach(d => {
+        MKEYS.forEach(mk => { d.meals[mk] = { menu: 0, persons: 2, ingr: {}, skipped: false }; });
+      });
+      renderWeek(); computeSummary(); saveState();
     }
     function removeDay(di) {
       state.dayLabels[di] = DAYS[di];
