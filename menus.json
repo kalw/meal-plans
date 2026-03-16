@@ -1,0 +1,19 @@
+{
+  "MENUS": {
+    "pdj": [
+      { "label": "Bleu — Yaourt + Fruit",    "color": "blue",   "items": [{"f":"Yaourt","q":190,"u":"g"},{"f":"Fruit","q":1,"u":"fruit"}] },
+      { "label": "Vert — Volaille + Légumes", "color": "green",  "items": [{"f":"Volaille","q":75,"u":"g"},{"f":"Légumes","q":95,"u":"g"},{"f":"Fruit","q":1,"u":"fruit"},{"f":"Pain","q":1,"u":"portion"}] },
+      { "label": "Orange — Lait + Féculents", "color": "orange", "items": [{"f":"Lait","q":190,"u":"ml"},{"f":"Féculents","q":45,"u":"g"},{"f":"Fruit","q":1,"u":"fruit"}] }
+    ],
+    "dej": [
+      { "label": "Bleu — Légumes secs",        "color": "blue",   "items": [{"f":"Légumes secs","q":65,"u":"g"},{"f":"Légumes","q":140,"u":"g"},{"f":"Fruit","q":1,"u":"fruit"},{"f":"Pain","q":1,"u":"portion"}] },
+      { "label": "Vert — Fromage + Légumes",   "color": "green",  "items": [{"f":"Fromage","q":75,"u":"g"},{"f":"Légumes","q":140,"u":"g"},{"f":"Fruit","q":1,"u":"fruit"},{"f":"Pain","q":1,"u":"portion"}] },
+      { "label": "Orange — Viande + Salade",   "color": "orange", "items": [{"f":"Viande","q":120,"u":"g"},{"f":"Salade","q":140,"u":"g"},{"f":"Fruit","q":1,"u":"fruit"},{"f":"Pain","q":1,"u":"portion"}] }
+    ],
+    "din": [
+      { "label": "Bleu — Viande + Légumes",    "color": "blue",   "items": [{"f":"Viande","q":130,"u":"g"},{"f":"Légumes","q":150,"u":"g"},{"f":"Fruit","q":1,"u":"fruit"},{"f":"Pain","q":1,"u":"portion"}] },
+      { "label": "Vert — Oeufs + Salade",      "color": "green",  "items": [{"f":"Oeufs","q":2,"u":"oeufs"},{"f":"Salade","q":150,"u":"g"},{"f":"Fruit","q":1,"u":"fruit"},{"f":"Pain","q":1,"u":"portion"}] },
+      { "label": "Orange — Poisson + Légumes", "color": "orange", "items": [{"f":"Poisson","q":130,"u":"g"},{"f":"Légumes","q":150,"u":"g"},{"f":"Fruit","q":1,"u":"fruit"},{"f":"Pain","q":1,"u":"portion"}] }
+    ]
+  }
+}

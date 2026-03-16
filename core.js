@@ -14,39 +14,22 @@ const DAYS  = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'
 const MEALS = ['Petit-déjeuner','Déjeuner','Dîner'];
 const MKEYS = ['pdj','dej','din'];
 
-// Ingredient configuration — populated via _initData() (loaded from ingredients.json)
-let INGR, P3_NEW, FRUIT_DATA, INGR_QTY;
+// Data — populated via _initData() (loaded from ingredients.json + menus.json)
+let INGR, P3_NEW, FRUIT_DATA, INGR_QTY, MENUS;
 
 /**
- * Initialise ingredient data from an external JSON payload.
+ * Initialise data from external JSON payloads.
  * Called automatically in Node.js (tests); called by index.html after fetch().
- * @param {object} data - parsed contents of ingredients.json
+ * @param {object} ingredientsData - parsed contents of ingredients.json
+ * @param {object} menusData       - parsed contents of menus.json
  */
-function _initData(data) {
-  INGR       = data.INGR;
-  P3_NEW     = new Set(data.P3_NEW);
-  FRUIT_DATA = data.FRUIT_DATA;
-  INGR_QTY   = data.INGR_QTY;
+function _initData(ingredientsData, menusData) {
+  INGR       = ingredientsData.INGR;
+  P3_NEW     = new Set(ingredientsData.P3_NEW);
+  FRUIT_DATA = ingredientsData.FRUIT_DATA;
+  INGR_QTY   = ingredientsData.INGR_QTY;
+  MENUS      = menusData.MENUS;
 }
-
-const MENUS = {
-  pdj: [
-    { label:'Bleu — Yaourt + Fruit',        color:'blue',   items:[{f:'Yaourt',q:190,u:'g'},{f:'Fruit',q:1,u:'fruit'}] },
-    { label:'Vert — Volaille + Légumes',     color:'green',  items:[{f:'Volaille',q:75,u:'g'},{f:'Légumes',q:95,u:'g'},{f:'Fruit',q:1,u:'fruit'},{f:'Pain',q:1,u:'portion'}] },
-    { label:'Orange — Lait + Féculents',     color:'orange', items:[{f:'Lait',q:190,u:'ml'},{f:'Féculents',q:45,u:'g'},{f:'Fruit',q:1,u:'fruit'}] },
-  ],
-  dej: [
-    { label:'Bleu — Légumes secs',           color:'blue',   items:[{f:'Légumes secs',q:65,u:'g'},{f:'Légumes',q:140,u:'g'},{f:'Fruit',q:1,u:'fruit'},{f:'Pain',q:1,u:'portion'}] },
-    { label:'Vert — Fromage + Légumes',      color:'green',  items:[{f:'Fromage',q:75,u:'g'},{f:'Légumes',q:140,u:'g'},{f:'Fruit',q:1,u:'fruit'},{f:'Pain',q:1,u:'portion'}] },
-    { label:'Orange — Viande + Salade',      color:'orange', items:[{f:'Viande',q:120,u:'g'},{f:'Salade',q:140,u:'g'},{f:'Fruit',q:1,u:'fruit'},{f:'Pain',q:1,u:'portion'}] },
-  ],
-  din: [
-    { label:'Bleu — Viande + Légumes',       color:'blue',   items:[{f:'Viande',q:130,u:'g'},{f:'Légumes',q:150,u:'g'},{f:'Fruit',q:1,u:'fruit'},{f:'Pain',q:1,u:'portion'}] },
-    { label:'Vert — Oeufs + Salade',         color:'green',  items:[{f:'Oeufs',q:2,u:'oeufs'},{f:'Salade',q:150,u:'g'},{f:'Fruit',q:1,u:'fruit'},{f:'Pain',q:1,u:'portion'}] },
-    { label:'Orange — Poisson + Légumes',    color:'orange', items:[{f:'Poisson',q:130,u:'g'},{f:'Légumes',q:150,u:'g'},{f:'Fruit',q:1,u:'fruit'},{f:'Pain',q:1,u:'portion'}] },
-  ],
-};
-
 
 /**
  * Resolve quantity + unit for any ingredient per person per serving.
@@ -132,11 +115,10 @@ function buildTotals(state) {
 }
 
 // ─── Export for Node.js (tests) / expose as globals in browser ───────────────
-const _core = { DAYS, MEALS, MKEYS, MENUS, INGR, P3_NEW, FRUIT_DATA, INGR_QTY,
+const _core = { DAYS, MEALS, MKEYS,
                 _initData, resolveQty, fmtQty, ingrKey, activeList, buildTotals };
 
 if (typeof module !== 'undefined' && module.exports) {
-  _initData(require('./ingredients.json'));
+  _initData(require('./ingredients.json'), require('./menus.json'));
   module.exports = _core;
 }
-

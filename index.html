@@ -1745,10 +1745,10 @@
     }
 
     /* ── Init ── */
-    fetch('ingredients.json')
-      .then(r => r.json())
-      .then(data => {
-        _core._initData(data);
+    Promise.all([fetch("ingredients.json"), fetch("menus.json")])
+      .then(([r1, r2]) => Promise.all([r1.json(), r2.json()]))
+      .then(([ingredientsData, menusData]) => {
+        _core._initData(ingredientsData, menusData);
         const restored = loadState();
         if (restored) document.getElementById('globalPhase').value = state.phase;
         renderWeek();
