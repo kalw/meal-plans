@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "mkdir -p dist && cp index.html core.js ingredients.json dist/"
+    "build": "mkdir -p dist && cp index.html core.js ingredients.json dist/",
+    "test": "node tests.js"
   },
   "devDependencies": {
     "wrangler": "^3"
