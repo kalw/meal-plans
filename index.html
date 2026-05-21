@@ -1121,6 +1121,34 @@
         padding: 0 1rem .75rem;
       }
     }
+
+    /* ── Stock tab ── */
+    .stock-ingr-input {
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface2);
+      color: var(--text);
+      outline: none;
+    }
+    .stock-ingr-input:focus { border-color: var(--gold); }
+
+    .stock-qty-input {
+      width: 80px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface2);
+      color: var(--text);
+      text-align: right;
+      outline: none;
+    }
+    .stock-qty-input:focus { border-color: var(--gold); }
   </style>
 </head>
 
@@ -1148,6 +1176,7 @@
   <nav class="tabs">
     <button class="tab-btn active" onclick="switchTab('planner')">Planification</button>
     <button class="tab-btn" onclick="switchTab('ingredients')">Ingrédients</button>
+    <button class="tab-btn" onclick="switchTab('stock')">Stock</button>
     <button class="tab-btn" onclick="switchTab('courses')">Liste de courses</button>
   </nav>
 
@@ -1209,7 +1238,32 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════
-     TAB 3 — COURSES
+     TAB 3 — STOCK
+══════════════════════════════════════════════════ -->
+    <div id="tab-stock" class="tab-panel">
+      <h1 class="section-heading">Stock disponible</h1>
+      <p class="section-sub">Les ingrédients déjà disponibles seront automatiquement déduits de la liste de courses.</p>
+      <div class="courses-controls">
+        <button class="btn primary" onclick="addPantryRow()">+ Ajouter</button>
+      </div>
+      <div class="courses-table-wrap">
+        <table class="courses-table" id="stockTable">
+          <thead>
+            <tr>
+              <th>Famille</th>
+              <th>Ingrédient</th>
+              <th>Quantité</th>
+              <th>Unité</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="stockTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+     TAB 4 — COURSES
 ══════════════════════════════════════════════════ -->
     <div id="tab-courses" class="tab-panel">
       <h1 class="section-heading">Liste de courses</h1>
@@ -1276,6 +1330,7 @@
         activeDays: [0],
         dayLabels: [...DAYS],
         disabled: new Set(),
+        pantry: [],
         days: DAYS.map(() => ({
           meals: {
             pdj: { menu: 0, persons: 2, ingr: {}, skipped: false },
@@ -1380,6 +1435,7 @@
       event.target.classList.add('active');
       if (id === 'courses') renderCourses();
       if (id === 'ingredients') renderIngredients();
+      if (id === 'stock') renderStock();
     }
 
     /* ── Rebuild ── */
@@ -1635,6 +1691,92 @@
       }).join('');
     }
 
+    /* ── Stock / Pantry ── */
+    function buildIngrLookup() {
+      const lookup = {};
+      const allIngr = [];
+      ['2', '3'].forEach(ph => {
+        Object.entries(INGR[ph] || {}).forEach(([fam, names]) => {
+          names.forEach(name => {
+            if (!lookup[name]) {
+              const qty = INGR_QTY[name];
+              lookup[name] = { fam, unit: qty ? qty.u : 'g' };
+              allIngr.push(name);
+            }
+          });
+        });
+      });
+      return { lookup, allIngr: [...new Set(allIngr)].sort() };
+    }
+
+    function renderStock() {
+      const { lookup, allIngr } = buildIngrLookup();
+      // Populate datalist (create if missing)
+      let dl = document.getElementById('ingrDatalist');
+      if (!dl) { dl = document.createElement('datalist'); dl.id = 'ingrDatalist'; document.body.appendChild(dl); }
+      dl.innerHTML = allIngr.map(n => `<option value="${n.replace(/"/g, '&quot;')}">`).join('');
+
+      const tbody = document.getElementById('stockTbody');
+      if (!tbody) return;
+      const rows = (state.pantry || []).map((p, i) => `
+        <tr id="srow-${i}">
+          <td class="td-fam" id="sfam-${i}">${p.fam || '<span style="color:var(--muted);font-style:italic">—</span>'}</td>
+          <td><input type="text" list="ingrDatalist" value="${(p.name || '').replace(/"/g, '&quot;')}"
+               class="stock-ingr-input"
+               oninput="setPantryIngr(${i},this.value)"
+               onchange="setPantryIngr(${i},this.value)"
+               placeholder="Ingrédient…"></td>
+          <td><input type="number" value="${p.qty || 0}" min="0" step="1"
+               class="stock-qty-input"
+               oninput="setPantryQty(${i},this.value)"></td>
+          <td class="td-unit" id="sunit-${i}">${p.unit || 'g'}</td>
+          <td style="text-align:center"><button class="meal-delete-btn" onclick="removePantryRow(${i})" title="Supprimer">✕</button></td>
+        </tr>`).join('');
+      tbody.innerHTML = rows || `<tr><td colspan="5" class="empty-state" style="padding:1.5rem">Aucun stock enregistré — cliquez sur "+ Ajouter" pour commencer.</td></tr>`;
+    }
+
+    function addPantryRow() {
+      if (!state.pantry) state.pantry = [];
+      state.pantry.push({ fam: '', name: '', qty: 0, unit: 'g' });
+      renderStock();
+      setTimeout(() => {
+        const inputs = document.querySelectorAll('.stock-ingr-input');
+        if (inputs.length) inputs[inputs.length - 1].focus();
+      }, 30);
+    }
+
+    function removePantryRow(i) {
+      (state.pantry || []).splice(i, 1);
+      renderStock();
+      computeSummary();
+      saveState();
+    }
+
+    function setPantryIngr(i, name) {
+      if (!state.pantry || !state.pantry[i]) return;
+      state.pantry[i].name = name;
+      const { lookup } = buildIngrLookup();
+      const info = lookup[name];
+      if (info) {
+        state.pantry[i].fam  = info.fam;
+        state.pantry[i].unit = info.unit;
+        // Update family and unit cells in-place (avoids disrupting the focused input)
+        const famEl  = document.getElementById('sfam-'  + i);
+        const unitEl = document.getElementById('sunit-' + i);
+        if (famEl)  famEl.textContent  = info.fam;
+        if (unitEl) unitEl.textContent = info.unit;
+      }
+      computeSummary();
+      saveState();
+    }
+
+    function setPantryQty(i, val) {
+      if (!state.pantry || !state.pantry[i]) return;
+      state.pantry[i].qty = parseFloat(val) || 0;
+      computeSummary();
+      saveState();
+    }
+
     /* ── Export / Import ── */
     function exportPlan() {
       const payload = {
@@ -1643,6 +1785,7 @@
         activeDays: state.activeDays,
         dayLabels: state.dayLabels,
         disabled: [...state.disabled],
+        pantry: state.pantry || [],
         days: state.days.map(d => ({
           meals: {
             pdj: { menu: d.meals.pdj.menu, persons: d.meals.pdj.persons, ingr: { ...d.meals.pdj.ingr }, skipped: d.meals.pdj.skipped },
@@ -1703,6 +1846,7 @@
         state.activeDays = data.activeDays || [0];
         state.dayLabels = data.dayLabels || [...DAYS];
         state.disabled = new Set(data.disabled || []);
+        state.pantry = data.pantry || [];
         state.days = data.days.map(d => ({
           meals: {
             pdj: { menu: d.meals.pdj.menu || 0, persons: d.meals.pdj.persons || 2, ingr: d.meals.pdj.ingr || {}, skipped: !!d.meals.pdj.skipped },
@@ -1777,6 +1921,7 @@
           activeDays: state.activeDays,
           dayLabels: state.dayLabels,
           disabled: [...state.disabled],
+          pantry: state.pantry || [],
           days: state.days.map(d => ({
             meals: {
               pdj: { menu: d.meals.pdj.menu, persons: d.meals.pdj.persons, ingr: { ...d.meals.pdj.ingr }, skipped: d.meals.pdj.skipped },
@@ -1799,6 +1944,7 @@
         state.activeDays = data.activeDays || [0];
         state.dayLabels = data.dayLabels || [...DAYS];
         state.disabled = new Set(data.disabled || []);
+        state.pantry = data.pantry || [];
         state.days = data.days.map(d => ({
           meals: {
             pdj: { menu: d.meals.pdj.menu || 0, persons: d.meals.pdj.persons || 2, ingr: d.meals.pdj.ingr || {}, skipped: !!d.meals.pdj.skipped },

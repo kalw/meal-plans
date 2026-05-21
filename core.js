@@ -114,6 +114,16 @@ function buildTotals(state) {
       });
     });
   });
+  // Subtract available pantry stock
+  (state.pantry || []).forEach(p => {
+    if (!p.name || !p.fam || !(p.qty > 0)) return;
+    const key = p.fam + '|' + p.name;
+    if (totals[key]) {
+      totals[key].qty -= p.qty;
+      if (totals[key].qty <= 0) { delete totals[key]; return; }
+    }
+  });
+
   return Object.values(totals).sort((a,b) => a.fam.localeCompare(b.fam) || a.name.localeCompare(b.name));
 }
 
