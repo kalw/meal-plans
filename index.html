@@ -1400,9 +1400,9 @@
         pantry: [],
         days: DAYS.map(() => ({
           meals: {
-            pdj: { menu: 0, persons: 2, ingr: {}, skipped: false },
-            dej: { menu: 0, persons: 2, ingr: {}, skipped: false },
-            din: { menu: 0, persons: 2, ingr: {}, skipped: false },
+            pdj: { menu: 0, persons: 1, ingr: {}, skipped: false },
+            dej: { menu: 0, persons: 1, ingr: {}, skipped: false },
+            din: { menu: 0, persons: 1, ingr: {}, skipped: false },
           }
         }))
       };
@@ -1440,17 +1440,29 @@
     }
 
     /* ── Day management ── */
+    function _defaultPersons() {
+      return parseInt(document.getElementById('globalPersons').value) || 1;
+    }
     function addNextDay() {
       const next = state.activeDays.length;
-      if (next < DAYS.length) { state.activeDays.push(next); renderWeek(); computeSummary(); saveState(); }
+      if (next < DAYS.length) {
+        state.activeDays.push(next);
+        const p = _defaultPersons();
+        MKEYS.forEach(mk => { state.days[next].meals[mk].persons = p; });
+        renderWeek(); computeSummary(); saveState();
+      }
     }
     function addFullWeek() {
-      state.activeDays = DAYS.map((_, i) => i); renderWeek(); computeSummary(); saveState();
+      const p = _defaultPersons();
+      state.activeDays = DAYS.map((_, i) => i);
+      state.days.forEach(d => { MKEYS.forEach(mk => { d.meals[mk].persons = p; }); });
+      renderWeek(); computeSummary(); saveState();
     }
     function resetDays() {
+      const p = _defaultPersons();
       state.activeDays = [0];
       state.days.forEach(d => {
-        MKEYS.forEach(mk => { d.meals[mk] = { menu: 0, persons: 2, ingr: {}, skipped: false }; });
+        MKEYS.forEach(mk => { d.meals[mk] = { menu: 0, persons: p, ingr: {}, skipped: false }; });
       });
       renderWeek(); computeSummary(); saveState();
     }
@@ -1520,7 +1532,7 @@
     }
 
     function setAllPersons() {
-      const v = parseInt(document.getElementById('globalPersons').value) || 2;
+      const v = parseInt(document.getElementById('globalPersons').value) || 1;
       state.activeDays.forEach(di => { MKEYS.forEach(mk => { state.days[di].meals[mk].persons = v; }); });
       renderWeek(); computeSummary(); saveState();
     }
