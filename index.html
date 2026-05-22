@@ -1923,10 +1923,15 @@
       }, 30);
     }
 
+    function _refreshCoursesIfActive() {
+      if (document.getElementById('tab-courses').classList.contains('active')) renderCourses();
+    }
+
     function removePantryRow(i) {
       (state.pantry || []).splice(i, 1);
       renderStock();
       computeSummary();
+      _refreshCoursesIfActive();
       saveState();
     }
 
@@ -1945,6 +1950,7 @@
         if (unitEl) unitEl.textContent = info.unit;
       }
       computeSummary();
+      _refreshCoursesIfActive();
       saveState();
     }
 
@@ -1952,6 +1958,7 @@
       if (!state.pantry || !state.pantry[i]) return;
       state.pantry[i].qty = parseFloat(val) || 0;
       computeSummary();
+      _refreshCoursesIfActive();
       saveState();
     }
 
