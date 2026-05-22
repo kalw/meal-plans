@@ -1136,6 +1136,14 @@
       text-align: right !important;
     }
 
+    .multi-item-select {
+      flex: 1;
+      font-size: 11px !important;
+      padding: 3px 5px !important;
+      border-radius: 5px !important;
+      min-width: 0;
+    }
+
     .multi-item-unit { font-size: 10px; color: var(--muted); flex-shrink: 0; }
 
     .multi-remove-btn {
@@ -1581,14 +1589,18 @@
               const remaining = list.filter(n => !usedNames.has(n));
               const totalQty = sels.reduce((s, x) => s + x.qty, 0);
               const safeFam  = fam.replace(/'/g, "\\'");
-              const itemsHtml = sels.map((sel, si) => `
-                <div class="multi-item">
-                  <span class="multi-item-name">${sel.name}</span>
+              const itemsHtml = sels.map((sel, si) => {
+                // Options for this row: current item + items not used in other rows
+                const rowOpts = list.filter(n => n === sel.name || !usedNames.has(n))
+                  .map(n => `<option value="${n}" ${n === sel.name ? 'selected' : ''}>${n}</option>`).join('');
+                return `<div class="multi-item">
+                  <select class="ingr-select multi-item-select" onchange="setMultiIngr(${di},'${mk}','${safeFam}',${si},this.value)">${rowOpts}</select>
                   <input type="number" class="multi-qty-input" value="${Math.round(sel.qty * 10) / 10}" min="1" max="999"
                     oninput="setMultiQty(${di},'${mk}','${safeFam}',${si},this.value)">
                   <span class="multi-item-unit">g</span>
-                  ${sels.length > 1 ? `<button class="multi-remove-btn" onclick="removeMultiIngr(${di},'${mk}','${safeFam}',${si})" title="Retirer">✕</button>` : ''}
-                </div>`).join('');
+                  <button class="multi-remove-btn" onclick="removeMultiIngr(${di},'${mk}','${safeFam}',${si})" title="Retirer">✕</button>
+                </div>`;
+              }).join('');
               const addSel = remaining.length ? `
                 <select class="multi-add-select" onchange="addMultiIngr(${di},'${mk}','${safeFam}',this.value,${item.q});this.value=''">
                   <option value="">+ ajouter ${fam.toLowerCase()}…</option>
@@ -1704,6 +1716,20 @@
         sels.push(...(lst.length ? [{name: lst[0], qty: dq}] : []));
       }
       state.days[di].meals[mk].ingr[fam] = sels;
+      renderWeek(); computeSummary(); saveState();
+    }
+
+    function setMultiIngr(di, mk, fam, si, name) {
+      if (!name) return;
+      const menuItem = MENUS[mk][state.days[di].meals[mk].menu].items.find(it => it.f === fam);
+      const dq = menuItem ? menuItem.q : 100;
+      // Ensure ingr[fam] is an array (may still be a string on first interaction)
+      if (!Array.isArray(state.days[di].meals[mk].ingr[fam])) {
+        state.days[di].meals[mk].ingr[fam] = _getMultiSels(di, mk, fam, dq);
+      }
+      const sels = state.days[di].meals[mk].ingr[fam];
+      if (!sels[si]) return;
+      sels[si].name = name;
       renderWeek(); computeSummary(); saveState();
     }
 
