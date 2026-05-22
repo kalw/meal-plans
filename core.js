@@ -13,6 +13,12 @@
 let DAYS, MEALS;
 const MKEYS = ['pdj','dej','din'];
 
+/**
+ * Families that support multi-ingredient selection per meal.
+ * m.ingr[fam] may be [{name, qty}, ...] instead of a plain string.
+ */
+const MULTI_FAM = ['Légumes', 'Salade'];
+
 // Data — populated via _initData() (loaded from ingredients.json + menus.json)
 let INGR, P3_NEW, FRUIT_DATA, INGR_QTY, MENUS;
 
@@ -102,15 +108,37 @@ function buildTotals(state) {
       cur.items.forEach(item => {
         const fam  = item.f;
         const list = activeList(phase, fam, state.disabled);
-        const chosen = (m.ingr[fam] && list.includes(m.ingr[fam]))
-          ? m.ingr[fam]
-          : (list[0] || fam);
-        const key = fam + '|' + chosen;
-        const r   = resolveQty(fam, chosen, item);
-        if (!totals[key]) totals[key] = {fam, name:chosen, qty:0, unit:r.u, count:0, meals:0, note:r.note||''};
-        totals[key].qty   += r.q * p;
-        totals[key].count += p;
-        totals[key].meals += 1;
+
+        if (MULTI_FAM.includes(fam)) {
+          // Multi-select: m.ingr[fam] may be [{name,qty},...] or a legacy string
+          const raw = m.ingr[fam];
+          let sels;
+          if (Array.isArray(raw) && raw.length > 0) {
+            sels = raw.filter(s => list.includes(s.name));
+            if (!sels.length) sels = list.length ? [{name: list[0], qty: item.q}] : [];
+          } else {
+            const name = (typeof raw === 'string' && list.includes(raw)) ? raw : (list[0] || '');
+            sels = name ? [{name, qty: item.q}] : [];
+          }
+          sels.forEach(sel => {
+            const key = fam + '|' + sel.name;
+            const r   = resolveQty(fam, sel.name, item);
+            if (!totals[key]) totals[key] = {fam, name:sel.name, qty:0, unit:r.u, count:0, meals:0, note:''};
+            totals[key].qty   += sel.qty * p;
+            totals[key].count += p;
+            totals[key].meals += 1;
+          });
+        } else {
+          const chosen = (m.ingr[fam] && list.includes(m.ingr[fam]))
+            ? m.ingr[fam]
+            : (list[0] || fam);
+          const key = fam + '|' + chosen;
+          const r   = resolveQty(fam, chosen, item);
+          if (!totals[key]) totals[key] = {fam, name:chosen, qty:0, unit:r.u, count:0, meals:0, note:r.note||''};
+          totals[key].qty   += r.q * p;
+          totals[key].count += p;
+          totals[key].meals += 1;
+        }
       });
     });
   });
@@ -128,7 +156,7 @@ function buildTotals(state) {
 }
 
 // ─── Export for Node.js (tests) / expose as globals in browser ───────────────
-const _core = { DAYS, MEALS, MKEYS,
+const _core = { DAYS, MEALS, MKEYS, MULTI_FAM,
                 _initData, resolveQty, fmtQty, ingrKey, activeList, buildTotals };
 
 if (typeof module !== 'undefined' && module.exports) {
