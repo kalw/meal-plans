@@ -1039,6 +1039,13 @@
       font-weight: 300;
     }
 
+    .td-qty-raw {
+      text-decoration: line-through;
+      color: var(--muted);
+      font-size: 12px;
+      margin-right: 4px;
+    }
+
     .td-unit {
       color: var(--muted);
       font-size: 12px;
@@ -1809,7 +1816,7 @@
         return `<tr id="crow-${i}" data-key="${key}" class="${isChecked ? 'checked' : ''}">
       <td class="td-fam">${e.fam}</td>
       <td class="td-name">${e.name}${e.note ? `<br><span class="td-note">${e.note}</span>` : ''}</td>
-      <td class="td-qty">${Math.round(e.qty)}</td>
+      <td class="td-qty">${e.rawQty > e.qty ? `<span class="td-qty-raw">${Math.round(e.rawQty)}</span>` : ''}${Math.round(e.qty)}</td>
       <td class="td-unit">${e.unit}</td>
       <td class="td-perpers">${fmtQty(e.qty / e.count, e.unit)}/pers.</td>
       <td class="td-meals">${e.meals}</td>
