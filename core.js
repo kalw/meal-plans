@@ -142,6 +142,9 @@ function buildTotals(state) {
       });
     });
   });
+  // Snapshot gross quantities before pantry deduction
+  Object.values(totals).forEach(e => { e.rawQty = e.qty; });
+
   // Subtract available pantry stock
   (state.pantry || []).forEach(p => {
     if (!p.name || !p.fam || !(p.qty > 0)) return;
